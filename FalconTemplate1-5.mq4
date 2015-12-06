@@ -1136,18 +1136,18 @@ This function scans through the current positions and does 2 things:
          if(isOrderInBEList == True){ // If current position is in the list, close it if hidden breakeven stop is breached
             bool Closing=false;
             if (OrderType() == OP_BUY && OrderOpenPrice() >= Bid ) { // Checks BE condition for closing long orders    
-               if(Journaling)Print("EA Journaling: Trying to close position "+OrderTicket()+" using breakeven stop...");
+               if(Journaling)Print("EA Journaling: Trying to close position "+OrderTicket()+" using hidden breakeven stop...");
                HandleTradingEnvironment(Journaling, Retry_Interval);
                Closing=OrderClose(OrderTicket(),OrderLots(),Bid,Slip*K,Blue);
                if(Journaling && !Closing)Print("EA Journaling: Unexpected Error has happened. Error Description: "+GetErrorDescription(GetLastError()));
-               if(Journaling && Closing)Print("EA Journaling: Position successfully closed due to breakeven stop.");      
+               if(Journaling && Closing)Print("EA Journaling: Position successfully closed due to hidden breakeven stop.");      
             }
             if (OrderType() == OP_SELL &&  OrderOpenPrice() <= Ask  ) { // Checks BE condition for closing short orders
-               if(Journaling)Print("EA Journaling: Trying to close position "+OrderTicket()+" using breakeven stop...");
+               if(Journaling)Print("EA Journaling: Trying to close position "+OrderTicket()+" using hidden breakeven stop...");
                HandleTradingEnvironment(Journaling, Retry_Interval);
                Closing=OrderClose(OrderTicket(),OrderLots(),Ask,Slip*K,Red);
                if(Journaling && !Closing)Print("EA Journaling: Unexpected Error has happened. Error Description: "+GetErrorDescription(GetLastError()));
-               if(Journaling && Closing)Print("EA Journaling: Position successfully closed due to breakeven stop.");             
+               if(Journaling && Closing)Print("EA Journaling: Position successfully closed due to hidden breakeven stop.");             
             }
          } else { // If current position is not in the hidden BE list. We check if we need to add this position to the hidden BE list.
             if((OrderType()==OP_BUY && (Bid-OrderOpenPrice())>(Breakeven_Buffer*P*Point)) || (OrderType()==OP_SELL && (OrderOpenPrice()-Ask)>(Breakeven_Buffer*P*Point))){
