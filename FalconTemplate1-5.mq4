@@ -9,7 +9,7 @@
 /* 
 
 Falcon v1.5: 
-- Included Breakevens and Trailing Stops
+- Included Breakevens Stops
 - Added RetryInterval as function input for OpenPositionMarket(), OpenPositionPending() and CloseOrderPosition(). Previously it was read as a global variable.
 
 */
@@ -164,7 +164,7 @@ int start()
          Take=VolBasedTakeProfit(IsVolatilityTakeProfitOn, FixedTakeProfit, myATR, VolBasedTPMultipler, P);
       }
 
-      if (UseBreakevenStops) BreakevenStopAll(OnJournaling, RetryInterval, BreakevenBuffer, MagicNumber);
+      if (UseBreakevenStops) BreakevenStopAll(OnJournaling, RetryInterval, BreakevenBuffer, MagicNumber, P);
       
       //----------(Hidden) TP, SL and Breakeven Stops Variables-----------  
       
@@ -1070,7 +1070,7 @@ void TriggerTakeProfitHidden(bool Journaling, int Retry_Interval, int Magic, int
 //+------------------------------------------------------------------+
 //| Breakeven Stop
 //+------------------------------------------------------------------+
-void BreakevenStopAll(bool Journaling, int Retry_Interval, double Breakeven_Buffer, int Magic){
+void BreakevenStopAll(bool Journaling, int Retry_Interval, double Breakeven_Buffer, int Magic, int K){
 // Type: Fixed Template 
 // Do not edit unless you know what you're doing 
 
@@ -1082,7 +1082,7 @@ void BreakevenStopAll(bool Journaling, int Retry_Interval, double Breakeven_Buff
       if(OrderSelect(i,SELECT_BY_POS,MODE_TRADES)==true && OrderSymbol()==Symbol() && OrderMagicNumber()==Magic)
         {
          RefreshRates();
-         if(OrderType()==OP_BUY && (Bid-OrderOpenPrice())>(Breakeven_Buffer*P*Point))
+         if(OrderType()==OP_BUY && (Bid-OrderOpenPrice())>(Breakeven_Buffer*K*Point))
            {
             if(Journaling)Print("EA Journaling: Trying to modify order "+OrderTicket()+" ...");
             HandleTradingEnvironment(Journaling, Retry_Interval);
@@ -1090,7 +1090,7 @@ void BreakevenStopAll(bool Journaling, int Retry_Interval, double Breakeven_Buff
             if(Journaling && !Modify)Print("EA Journaling: Unexpected Error has happened. Error Description: "+GetErrorDescription(GetLastError()));
             if(Journaling && Modify)Print("EA Journaling: Order successfully modified, breakeven stop inserted.");
            }
-         if(OrderType()==OP_SELL && (OrderOpenPrice()-Ask)>(Breakeven_Buffer*P*Point))
+         if(OrderType()==OP_SELL && (OrderOpenPrice()-Ask)>(Breakeven_Buffer*K*Point))
            {
             if(Journaling)Print("EA Journaling: Trying to modify order "+OrderTicket()+" ...");
             HandleTradingEnvironment(Journaling, Retry_Interval);
