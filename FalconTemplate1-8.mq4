@@ -70,14 +70,14 @@ extern double  TrailingStopDistance_Hidden=0; // In pips
 extern double  TrailingStopBuffer_Hidden=0; // In pips
 
 extern string  Header9="----------Volatility Trailing Stops Settings-----------";
-extern bool    UseVolTrailingStops=True;
-extern double  VolTrailingDistMultiplier=3; // In units of ATR
-extern double  VolTrailingBuffMultiplier=1; // In units of ATR
+extern bool    UseVolTrailingStops=False;
+extern double  VolTrailingDistMultiplier=0; // In units of ATR
+extern double  VolTrailingBuffMultiplier=0; // In units of ATR
 
 extern string  Header10="----------Hidden Volatility Trailing Stops Settings-----------";
-extern bool    UseHiddenVolTrailing=False;
-extern double  VolTrailingDistMultiplier_Hidden=0; // In units of ATR
-extern double  VolTrailingBuffMultiplier_Hidden=0; // In units of ATR
+extern bool    UseHiddenVolTrailing=True;
+extern double  VolTrailingDistMultiplier_Hidden=3; // In units of ATR
+extern double  VolTrailingBuffMultiplier_Hidden=1; // In units of ATR
 
 extern string  Header11="----------Volatility Measurement Settings-----------";
 extern int     atr_period=14;
@@ -689,7 +689,7 @@ int OpenPositionPending(int TYPE,double OpenPrice,datetime expiration,double LOT
          if(stoploss-OpenPrice<=MarketInfo(Symbol(),MODE_STOPLEVEL)*Point) 
            {
             stoploss=NormalizeDouble(OpenPrice+MarketInfo(Symbol(),MODE_STOPLEVEL)*Point,Digits);
-            if(Journaling)Print("EA Journaling: Stop Loss changed from "+initSL+" to "+(OpenPrice-stoploss)/(K*Point)+" pips");
+            if(Journaling)Print("EA Journaling: Stop Loss changed from " + initSL + " to " + (stoploss-OpenPrice)/(K*Point) + " pips");
            }
         }
       if((TYPE==OP_SELLLIMIT || TYPE==OP_SELLSTOP) && TP!=0)
@@ -698,7 +698,7 @@ int OpenPositionPending(int TYPE,double OpenPrice,datetime expiration,double LOT
          if(OpenPrice-takeprofit<=MarketInfo(Symbol(),MODE_STOPLEVEL)*Point) 
            {
             takeprofit=NormalizeDouble(OpenPrice-MarketInfo(Symbol(),MODE_STOPLEVEL)*Point,Digits);
-            if(Journaling)Print("EA Journaling: Take Profit changed from "+initTP+" to "+(OrderOpenPrice()-stoploss)/(K*Point)+" pips");
+            if(Journaling)Print("EA Journaling: Take Profit changed from " + initTP + " to " + (OpenPrice-takeprofit)/(K*Point) + " pips");
            }
         }
       if(Journaling)Print("EA Journaling: Trying to place a pending order...");
@@ -1773,7 +1773,6 @@ void SetHiddenVolTrailing(bool Journaling,double VolATR,double VolTrailingDistMu
       RefreshRates();
       if(OrderType()==OP_BUY)  VolTrailingStopLevel = MathMax(Bid, OrderOpenPrice()) - VolTrailingStopDist*K*Point; // Volatility trailing stop level of buy trades
       if(OrderType()==OP_SELL) VolTrailingStopLevel = MathMin(Ask, OrderOpenPrice()) + VolTrailingStopDist*K*Point; // Volatility trailing stop level of sell trades
-     
      }
 
    for(int x=0; x<ArrayRange(HiddenVolTrailingList,0); x++) // Loop through elements in HiddenVolTrailingList
