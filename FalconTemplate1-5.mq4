@@ -201,7 +201,7 @@ int start()
         
         }
 
-      if(EntrySignal(CrossTriggered)==2){ // Open Short Positions
+      else if(EntrySignal(CrossTriggered)==2){ // Open Short Positions
          OrderNumber = OpenPositionMarket(OP_SELL, GetLot(IsSizingOn, Lots, Risk, YenPairAdjustFactor, Stop, P), Stop, Take, MagicNumber, Slippage, OnJournaling, P, IsECNbroker, MaxRetriesPerTick, RetryInterval);
          
          // Set Stop Loss value for Hidden SL
